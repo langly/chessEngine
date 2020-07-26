@@ -1,6 +1,16 @@
 #ifndef __BOARD_H
 #define __BOARD_H
 
+#define HEIGHT 	8
+#define WIDTH 	8
+
+#include <queue>
+#include <iostream>
+
+// Some forward declr.
+struct Move;
+struct Board;
+
 typedef enum {
 	P_KING,
 	P_QUEEN,
@@ -10,24 +20,36 @@ typedef enum {
 	P_PAWN
 } Type;
 
-struct Move{
-	short x,y;
+struct Position{
+	int x,y;
+	void print(){ std::cout << x << "x" << y;} 
 };
 
-struct Piece {
+class Piece {
+	public:
 	Piece(Type _t, bool _white);
 	Type type;
 	bool white;
 	int getValue();
-	Move move(int x, int y);
+	Position pos;
+	void print();
+	void appendLegalMoves(std::queue<Move*> *m, Board *b, int y,int x);
 };
 
+struct Move{
+	Position from;
+	Position to;
+	Piece *piece;
+	void print(){ std::cout << "f: "; from.print();  std::cout << " t:"; to.print(); std::cout << std::endl;}
+	Move(int fY, int fX, int toY, int toX);
+	Move() {} 
+};
 
 struct Board {
 	int sum();
-	Piece* board[8][8];
-
-
+	Piece* board[HEIGHT][WIDTH];
+	std::queue<Move*> *findLegalMoves();
+	void print();
 };
 
 #endif
