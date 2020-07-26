@@ -7,34 +7,12 @@
 #include <queue>
 #include <iostream>
 
+#include "piece.h" 
+
 // Some forward declr.
 struct Move;
 struct Board;
 
-typedef enum {
-	P_KING,
-	P_QUEEN,
-	P_BISHOP,
-	P_KNIGHT,
-	P_ROOK,
-	P_PAWN
-} Type;
-
-struct Position{
-	int x,y;
-	void print(){ std::cout << x << "x" << y;} 
-};
-
-class Piece {
-	public:
-	Piece(Type _t, bool _white);
-	Type type;
-	bool white;
-	int getValue();
-	Position pos;
-	void print();
-	void appendLegalMoves(std::queue<Move*> *m, Board *b, int y,int x);
-};
 
 struct Move{
 	Position from;
