@@ -113,6 +113,8 @@ void Piece::bishopMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 	// Some logic for the different types of Pieces here.. 
 	// Could possibly be solved more elegantly using sub classes..
+	//
+	// TODO: I think we can capture ourselves now.. Should be fixed
 
 	Move *m = nullptr;
 	
@@ -123,8 +125,33 @@ void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 	} else if ( type == P_KNIGHT) { 
 		// Knight pieces should be just rotational around the L though
 	} else if ( type == P_KING ){
-
+		// TODO: this requires some special rules.
 	} else if ( type == P_PAWN ) {
+		// TOOD: Implement en passant
+		// TODO: Upgrade
+
+		// If we are white, we go up the table
+		int direction = white ? -1 : 1;
+		int next = y + direction;
+
+		// Cannot capture a piece infront of us.
+		if ( next >= 0 && next < HEIGHT ){
+			if ( !b->board[next][x] ) { 
+				m = new Move(y,x,next,x);	
+				moves->push_back(m);
+			}
+
+			if ( x+1 < WIDTH && b->board[next][x+1] ) { 
+				m = new Move(y,x,next,x+1);	
+				moves->push_back(m);
+			}
+
+			if ( x-1 >= 0 && b->board[next][x-1] ) { 
+				m = new Move(y,x,next,x-1);	
+				moves->push_back(m);
+			}
+		}
+
 
 	} else if ( type == P_QUEEN) { 
 		// This is just Bishop and Rook combined.
