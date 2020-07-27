@@ -4,7 +4,7 @@
 #define HEIGHT 	8
 #define WIDTH 	8
 
-#include <queue>
+#include <deque>
 #include <iostream>
 
 #include "piece.h" 
@@ -26,7 +26,7 @@ struct Move{
 struct Board {
 	int sum();
 	Piece* board[HEIGHT][WIDTH];
-	std::queue<Move*> *findLegalMoves();
+	std::deque<Move*> *findLegalMoves();
 	void print();
 };
 

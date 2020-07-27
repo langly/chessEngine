@@ -15,9 +15,9 @@ Move::Move(int fY, int fX, int toY, int toX){
 
 // Find all of the legal moves on the board.
 // TODO: We might want to make this into a queue or similar for performance reasons
-std::queue<Move*> *Board::findLegalMoves(){
+std::deque<Move*> *Board::findLegalMoves(){
 	Piece *p = nullptr;
-	queue<Move*> *moves = new queue<Move*>();
+	deque<Move*> *moves = new deque<Move*>();
 
 	for ( int y = 0; y < HEIGHT;y++){
 		for ( int x = 0; x < WIDTH;x++){
@@ -69,12 +69,16 @@ int main(int argc, char **argv){
 
 
 	// Set up the initial board here.
-	b.board[0][0] = new Piece(P_ROOK, true);
-	b.board[4][0] = new Piece(P_ROOK, false);
+	b.board[4][4] = new Piece(P_BISHOP, true);
+	b.board[6][6] = new Piece(P_ROOK, false);
 
 	b.print();
 
-	queue<Move*> *q = b.findLegalMoves();
+	deque<Move*> *q = b.findLegalMoves();
+
+	for ( auto iter = q->begin(); iter != q->end(); iter++) {
+		(*iter)->print();
+	}
 
 	cout << q->size() << endl;
 

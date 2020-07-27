@@ -2,7 +2,7 @@
 #define __PIECE_H
 
 #include <iostream>
-#include <queue>
+#include <deque>
 
 struct Move;
 struct Board;
@@ -29,7 +29,7 @@ class Piece {
 	int getValue();
 	Position pos;
 	void print();
-	void appendLegalMoves(std::queue<Move*> *m, Board *b, int y,int x);
+	void appendLegalMoves(std::deque<Move*> *m, Board *b, int y,int x);
 };
 
 

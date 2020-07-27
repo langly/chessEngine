@@ -44,7 +44,7 @@ void Piece::print(){
 	cout << char(white ? c : c + 'A' - 'a');
 }
 
-void Piece::appendLegalMoves(std::queue<Move*> *moves, Board *b, int y,int x){
+void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 	// Some logic for the different types of Pieces here.. 
 	// Could possibly be solved more elegantly using sub classes..
 
@@ -58,11 +58,7 @@ void Piece::appendLegalMoves(std::queue<Move*> *moves, Board *b, int y,int x){
 		for ( int i = y+1; i < HEIGHT; i++ ){
 			m = new Move(y,x,i,x);
 			m->piece = this;
-
-			moves->push(m);
-
-			m->print();
-
+			moves->push_back(m);
 			if ( b->board[i][x] ) break;
 		}
 
@@ -70,11 +66,7 @@ void Piece::appendLegalMoves(std::queue<Move*> *moves, Board *b, int y,int x){
 		for ( int i = y-1; i >= 0; i-- ){
 			m = new Move(y,x,i,x);
 			m->piece = this;
-
-			moves->push(m);
-
-			m->print();
-
+			moves->push_back(m);
 			if ( b->board[i][x] ) break;
 		}
 
@@ -82,11 +74,7 @@ void Piece::appendLegalMoves(std::queue<Move*> *moves, Board *b, int y,int x){
 		for ( int i = x+1; i < WIDTH; i++ ){
 			m = new Move(y,x,y,i);
 			m->piece = this;
-
-			moves->push(m);
-
-			m->print();
-
+			moves->push_back(m);
 			if ( b->board[y][i] ) break;
 		}
 
@@ -94,12 +82,43 @@ void Piece::appendLegalMoves(std::queue<Move*> *moves, Board *b, int y,int x){
 		for ( int i = x-1; i >= 0; i-- ){
 			m = new Move(y,x,y,i);
 			m->piece = this;
-
-			moves->push(m);
-
-			m->print();
-
+			moves->push_back(m);
 			if ( b->board[y][i] ) break;
 		}
+	} else  if ( type == P_BISHOP ) { 
+		for ( int i = y+1,j = x+1; i < HEIGHT && j < WIDTH; i++,j++) {
+			m = new Move(y,x,i,j);
+			m->piece = this;
+			moves->push_back(m);
+			if ( b->board[i][j] ) break;
+		}
+		for ( int i = y-1,j = x-1; i >= 0 && j >= 0; i--,j--) {
+			m = new Move(y,x,i,j);
+			m->piece = this;
+			moves->push_back(m);
+			if ( b->board[i][j] ) break;
+		}
+		for ( int i = y+1,j = x-1; i < HEIGHT && j >= 0; i++,j--) {
+			m = new Move(y,x,i,j);
+			m->piece = this;
+			moves->push_back(m);
+			if ( b->board[i][j] ) break;
+		}
+		for ( int i = y-1,j = x+1; i >= 0 && j >= WIDTH; i--,j++){
+			m = new Move(y,x,i,j);
+			m->piece = this;
+			moves->push_back(m);
+			if ( b->board[i][j] ) break;
+		}
+	} else if ( type == P_KNIGHT) { 
+		// Knight pieces should be just rotational around the L though
+	} else if ( type == P_KING ){
+
+	} else if ( type == P_PAWN ) {
+
+	} else if ( type == P_QUEEN) { 
+		// This is just Bishop and Rook combined.
+	} else {
+		cout << "Type not supported" << endl;
 	}
 }
