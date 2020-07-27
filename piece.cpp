@@ -44,6 +44,72 @@ void Piece::print(){
 	cout << char(white ? c : c + 'A' - 'a');
 }
 
+void Piece::rookMoves(std::deque<Move*> *moves, Board *b, int y,int x){
+	// Do the 4 directions individually. Makes it easier to 
+	// handle the intersect case.
+
+		// Up
+	Move *m = nullptr;
+	for ( int i = y+1; i < HEIGHT; i++ ){
+		m = new Move(y,x,i,x);
+		m->piece = this;
+		moves->push_back(m);
+		if ( b->board[i][x] ) break;
+	}
+
+	// Down
+	for ( int i = y-1; i >= 0; i-- ){
+		m = new Move(y,x,i,x);
+		m->piece = this;
+		moves->push_back(m);
+		if ( b->board[i][x] ) break;
+	}
+
+	// Right
+	for ( int i = x+1; i < WIDTH; i++ ){
+		m = new Move(y,x,y,i);
+		m->piece = this;
+		moves->push_back(m);
+		if ( b->board[y][i] ) break;
+	}
+
+	// Left
+	for ( int i = x-1; i >= 0; i-- ){
+		m = new Move(y,x,y,i);
+		m->piece = this;
+		moves->push_back(m);
+		if ( b->board[y][i] ) break;
+	}
+}
+
+void Piece::bishopMoves(std::deque<Move*> *moves, Board *b, int y,int x){
+	Move *m = nullptr;
+	for ( int i = y+1,j = x+1; i < HEIGHT && j < WIDTH; i++,j++) {
+		m = new Move(y,x,i,j);
+		m->piece = this;
+		moves->push_back(m);
+		if ( b->board[i][j] ) break;
+	}
+	for ( int i = y-1,j = x-1; i >= 0 && j >= 0; i--,j--) {
+		m = new Move(y,x,i,j);
+		m->piece = this;
+		moves->push_back(m);
+		if ( b->board[i][j] ) break;
+	}
+	for ( int i = y+1,j = x-1; i < HEIGHT && j >= 0; i++,j--) {
+		m = new Move(y,x,i,j);
+		m->piece = this;
+		moves->push_back(m);
+		if ( b->board[i][j] ) break;
+	}
+	for ( int i = y-1,j = x+1; i >= 0 && j >= WIDTH; i--,j++){
+		m = new Move(y,x,i,j);
+		m->piece = this;
+		moves->push_back(m);
+		if ( b->board[i][j] ) break;
+	}
+}
+
 void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 	// Some logic for the different types of Pieces here.. 
 	// Could possibly be solved more elegantly using sub classes..
@@ -51,65 +117,9 @@ void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 	Move *m = nullptr;
 	
 	if ( type == P_ROOK ) {
-		// Do the 4 directions individually. Makes it easier to 
-		// handle the intersect case.
-
-		// Up
-		for ( int i = y+1; i < HEIGHT; i++ ){
-			m = new Move(y,x,i,x);
-			m->piece = this;
-			moves->push_back(m);
-			if ( b->board[i][x] ) break;
-		}
-
-		// Down
-		for ( int i = y-1; i >= 0; i-- ){
-			m = new Move(y,x,i,x);
-			m->piece = this;
-			moves->push_back(m);
-			if ( b->board[i][x] ) break;
-		}
-
-		// Right
-		for ( int i = x+1; i < WIDTH; i++ ){
-			m = new Move(y,x,y,i);
-			m->piece = this;
-			moves->push_back(m);
-			if ( b->board[y][i] ) break;
-		}
-
-		// Left
-		for ( int i = x-1; i >= 0; i-- ){
-			m = new Move(y,x,y,i);
-			m->piece = this;
-			moves->push_back(m);
-			if ( b->board[y][i] ) break;
-		}
+		rookMoves(moves,b,y,x);
 	} else  if ( type == P_BISHOP ) { 
-		for ( int i = y+1,j = x+1; i < HEIGHT && j < WIDTH; i++,j++) {
-			m = new Move(y,x,i,j);
-			m->piece = this;
-			moves->push_back(m);
-			if ( b->board[i][j] ) break;
-		}
-		for ( int i = y-1,j = x-1; i >= 0 && j >= 0; i--,j--) {
-			m = new Move(y,x,i,j);
-			m->piece = this;
-			moves->push_back(m);
-			if ( b->board[i][j] ) break;
-		}
-		for ( int i = y+1,j = x-1; i < HEIGHT && j >= 0; i++,j--) {
-			m = new Move(y,x,i,j);
-			m->piece = this;
-			moves->push_back(m);
-			if ( b->board[i][j] ) break;
-		}
-		for ( int i = y-1,j = x+1; i >= 0 && j >= WIDTH; i--,j++){
-			m = new Move(y,x,i,j);
-			m->piece = this;
-			moves->push_back(m);
-			if ( b->board[i][j] ) break;
-		}
+		bishopMoves(moves,b,y,x);
 	} else if ( type == P_KNIGHT) { 
 		// Knight pieces should be just rotational around the L though
 	} else if ( type == P_KING ){
@@ -118,6 +128,8 @@ void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 
 	} else if ( type == P_QUEEN) { 
 		// This is just Bishop and Rook combined.
+		rookMoves(moves,b,y,x);
+		bishopMoves(moves,b,y,x);
 	} else {
 		cout << "Type not supported" << endl;
 	}

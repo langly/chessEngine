@@ -22,6 +22,10 @@ typedef enum {
 } Type;
 
 class Piece {
+	private: 
+		void bishopMoves(std::deque<Move*> *m, Board *b, int y,int x);
+		void rookMoves(std::deque<Move*> *m, Board *b, int y,int x);
+
 	public:
 	Piece(Type _t, bool _white);
 	Type type;
