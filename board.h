@@ -26,8 +26,9 @@ struct Move{
 struct Board {
 	int sum();
 	Piece* board[HEIGHT][WIDTH];
-	std::deque<Move*> *findLegalMoves();
+	std::deque<Move*> *findLegalMoves(bool turn_white);
 	void print();
+	std::deque<Board*> mutate();
 };
 
 #endif

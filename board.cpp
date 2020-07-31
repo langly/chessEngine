@@ -15,13 +15,13 @@ Move::Move(int fY, int fX, int toY, int toX){
 
 // Find all of the legal moves on the board.
 // TODO: We might want to make this into a queue or similar for performance reasons
-std::deque<Move*> *Board::findLegalMoves(){
+std::deque<Move*> *Board::findLegalMoves(bool turn_white){
 	Piece *p = nullptr;
 	deque<Move*> *moves = new deque<Move*>();
 
 	for ( int y = 0; y < HEIGHT;y++){
 		for ( int x = 0; x < WIDTH;x++){
-			if ( (p = board[y][x] )){
+			if ( (p = board[y][x] ) && p->white == turn_white){
 				cout << "new piece" << endl;
 				p->appendLegalMoves(moves,this, y,x);			
 			}
@@ -58,6 +58,27 @@ void Board::print(){
 	}
 }
 
+std::deque<Board*> Board::mutate(){
+	deque<Move*> *moves = findLegalMoves(true);
+
+	deque<Board*> new_boards;
+
+	// Calculate all the permutations for the boards here
+	for ( auto iter = moves->begin(); iter < moves->end(); iter++){
+		Move *m = *iter; 
+
+		Board *b = new Board();
+		*b = *this;
+
+		b->board[m->from.y][m->from.x] = nullptr;
+		b->board[m->to.y][m->to.x] = m->piece;
+
+		new_boards.push_back(b);
+	}
+
+	return new_boards;
+}
+
 int main(int argc, char **argv){
 	Board b;
 
@@ -74,15 +95,11 @@ int main(int argc, char **argv){
 
 	b.print();
 
-	deque<Move*> *q = b.findLegalMoves();
-
-	for ( auto iter = q->begin(); iter != q->end(); iter++) {
+	auto i = b.mutate();
+	for ( auto iter = i.begin(); iter != i.end(); iter++){
 		(*iter)->print();
+		cout << endl;
 	}
-
-	cout << q->size() << endl;
-
-	cout << b.sum() << endl;
 
 
 	return 0;

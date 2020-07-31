@@ -110,6 +110,10 @@ void Piece::bishopMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 	}
 }
 
+bool Piece::pawnUpgrade(int y){
+	return ( y == 0 && white ) || ( y == HEIGHT-1 && !white);
+}
+
 void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 	// Some logic for the different types of Pieces here.. 
 	// Could possibly be solved more elegantly using sub classes..
@@ -125,11 +129,18 @@ void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 	} else if ( type == P_KNIGHT) { 
 		// Knight pieces should be just rotational around the L though
 	} else if ( type == P_KING ){
-		// TODO: this requires some special rules.
-	} else if ( type == P_PAWN ) {
-		// TOOD: Implement en passant
-		// TODO: Upgrade
 
+		// This move is legal though only if nobody else can reach it. 
+		for ( int i = -1; i < 2; i++ ){
+			for ( int j = -1; j < 2; j++ ){
+				if ( y+i >= 0 && y+i < HEIGHT && 
+				     x+j >= 0 && x+j < WIDTH ){
+					m = new Move(y,x,y+i,x+j);	
+					moves->push_back(m);
+				}
+			}
+		}
+	} else if ( type == P_PAWN ) {
 		// If we are white, we go up the table
 		int direction = white ? -1 : 1;
 		int next = y + direction;
@@ -137,8 +148,15 @@ void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 		// Cannot capture a piece infront of us.
 		if ( next >= 0 && next < HEIGHT ){
 			if ( !b->board[next][x] ) { 
-				m = new Move(y,x,next,x);	
-				moves->push_back(m);
+				m = new Move(y,x,next,x);
+
+				// TODO: Upgrade
+
+				if ( pawnUpgrade(next) ){
+					// Have to upgrade pieces.
+				} else {
+					moves->push_back(m);
+				}
 			}
 
 			if ( x+1 < WIDTH && b->board[next][x+1] ) { 
@@ -151,6 +169,9 @@ void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 				moves->push_back(m);
 			}
 		}
+
+		// TOOD: Implement en passant. 
+		// We probably need to introduce some state to the pawns for doing this.
 
 
 	} else if ( type == P_QUEEN) { 
