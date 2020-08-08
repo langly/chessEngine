@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -148,13 +149,18 @@ void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 		// Cannot capture a piece infront of us.
 		if ( next >= 0 && next < HEIGHT ){
 			if ( !b->board[next][x] ) { 
-				m = new Move(y,x,next,x);
-
-				// TODO: Upgrade
 
 				if ( pawnUpgrade(next) ){
-					// Have to upgrade pieces.
+					vector<Type> upgradables = { P_QUEEN, P_BISHOP, P_KNIGHT, P_ROOK };
+
+					// Upgrade pieces.
+					for ( auto i : upgradables ){
+						m = new Move(y,x,next,x);
+						Piece *p = new Piece(i,white);
+						moves->push_back(m);
+					}
 				} else {
+					m = new Move(y,x,next,x);
 					moves->push_back(m);
 				}
 			}

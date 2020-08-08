@@ -11,6 +11,7 @@ Move::Move(int fY, int fX, int toY, int toX){
 	from.y = fY;
 	to.x = toX;
 	to.y = toY;
+	piece = nullptr;
 }
 
 // Find all of the legal moves on the board.
