@@ -146,32 +146,39 @@ void Piece::appendLegalMoves(std::deque<Move*> *moves, Board *b, int y,int x){
 		int direction = white ? -1 : 1;
 		int next = y + direction;
 
+
 		// Cannot capture a piece infront of us.
 		if ( next >= 0 && next < HEIGHT ){
 			if ( !b->board[next][x] ) { 
 
 				if ( pawnUpgrade(next) ){
-					vector<Type> upgradables = { P_QUEEN, P_BISHOP, P_KNIGHT, P_ROOK };
+					vector<Type> upgradables { P_QUEEN, P_BISHOP, P_KNIGHT, P_ROOK };
+
+					cout << upgradables.size() << endl;
 
 					// Upgrade pieces.
 					for ( auto i : upgradables ){
 						m = new Move(y,x,next,x);
-						Piece *p = new Piece(i,white);
+						m->piece = new Piece(i,white);
 						moves->push_back(m);
 					}
 				} else {
+					cout << " to" << next <<endl;
 					m = new Move(y,x,next,x);
+					m->piece = this;
 					moves->push_back(m);
 				}
 			}
 
-			if ( x+1 < WIDTH && b->board[next][x+1] ) { 
+			if ( x+1 < WIDTH && b->board[next][x+1] && b->board[next][x+1]->white != white) { 
 				m = new Move(y,x,next,x+1);	
+				m->piece = this;
 				moves->push_back(m);
 			}
 
-			if ( x-1 >= 0 && b->board[next][x-1] ) { 
+			if ( x-1 >= 0 && b->board[next][x-1] && b->board[next][x-1]->white != white) { 
 				m = new Move(y,x,next,x-1);	
+				m->piece = this;
 				moves->push_back(m);
 			}
 		}

@@ -59,14 +59,14 @@ void Board::print(){
 	}
 }
 
-std::deque<Board*> Board::mutate(){
-	deque<Move*> *moves = findLegalMoves(true);
+std::deque<Board*> Board::mutate(bool turn_white){
+	deque<Move*> *moves = findLegalMoves(turn_white);
 
 	deque<Board*> new_boards;
 
 	// Calculate all the permutations for the boards here
-	for ( auto iter = moves->begin(); iter < moves->end(); iter++){
-		Move *m = *iter; 
+	for ( auto iter : *moves ){
+		Move *m = iter; 
 
 		Board *b = new Board();
 		*b = *this;
@@ -91,12 +91,14 @@ int main(int argc, char **argv){
 
 
 	// Set up the initial board here.
-	b.board[4][4] = new Piece(P_BISHOP, true);
-	b.board[6][6] = new Piece(P_ROOK, false);
+	//b.board[4][4] = new Piece(P_BISHOP, true);
+	//b.board[6][6] = new Piece(P_ROOK, false);
+	b.board[6][2] = new Piece(P_PAWN, false);
+	b.board[6][3] = new Piece(P_PAWN, true);
 
 	b.print();
 
-	auto i = b.mutate();
+	auto i = b.mutate(false);
 	for ( auto iter = i.begin(); iter != i.end(); iter++){
 		(*iter)->print();
 		cout << endl;

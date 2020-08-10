@@ -28,7 +28,7 @@ struct Board {
 	Piece* board[HEIGHT][WIDTH];
 	std::deque<Move*> *findLegalMoves(bool turn_white);
 	void print();
-	std::deque<Board*> mutate();
+	std::deque<Board*> mutate(bool turn_white);
 };
 
 #endif
